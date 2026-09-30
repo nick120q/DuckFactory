@@ -2,6 +2,13 @@ public abstract class Entidade {
     private String nome;
     private String funcao;
 
+    public Entidade(String nome, String funcao) {
+        this.nome = nome;
+        this.funcao = funcao;
+    }
+
+    public abstract void apresentar();
+
     public String getNome() {
         return nome;
     }
