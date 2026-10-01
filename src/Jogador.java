@@ -3,7 +3,7 @@ public class Jogador {
     private double saldo;
     private int pontosMisticos;
 
-    public Jogador(String nome, double saldo, int pontosMisticos) {
+    public Jogador(String nome) {
         this.nome = nome;
         this.saldo = 0;
         this.pontosMisticos = pontosMisticos;
