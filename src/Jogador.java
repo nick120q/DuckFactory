@@ -1,7 +1,7 @@
 public class Jogador {
+
     private String nome;
     private double saldo;
-
 
     public Jogador(String nome) {
         this.nome = nome;

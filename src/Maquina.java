@@ -1,8 +1,11 @@
 public abstract class Maquina {
+
     private String nome;
     private int nivel;
+
     private double dinheiroPorCiclo;
     private double tempoProducao;
+    private double custoUpgrade;
 
     private boolean produzindo;
     private long inicioProducao;
@@ -12,6 +15,8 @@ public abstract class Maquina {
         this.nivel = 1;
         this.dinheiroPorCiclo = dinheiroPorCiclo;
         this.tempoProducao = tempoProducao;
+        this.custoUpgrade = 50;
+
         this.produzindo = false;
     }
 
@@ -31,66 +36,86 @@ public abstract class Maquina {
         return tempoProducao;
     }
 
+    public double getCustoUpgrade() {
+        return custoUpgrade;
+    }
+
     public boolean isProduzindo() {
         return produzindo;
     }
 
     public void ativar() {
+
         if (produzindo) {
-            IO.println("A máquina já está produzindo!");
             return;
         }
 
         inicioProducao = System.currentTimeMillis();
         produzindo = true;
-
-        IO.println(nome + " foi ativada!");
     }
 
     public boolean terminou() {
+
         if (!produzindo) {
             return false;
         }
 
-        long tempoPassado = System.currentTimeMillis() - inicioProducao;
-        long tempoNecessario = (long) (tempoProducao * 1000);
+        long tempoPassado =
+                System.currentTimeMillis() - inicioProducao;
+
+        long tempoNecessario =
+                (long) (tempoProducao * 1000);
 
         return tempoPassado >= tempoNecessario;
     }
 
     public double coletar() {
+
         if (!terminou()) {
             return 0;
         }
 
         produzindo = false;
+
         return produzir();
     }
 
     public double tempoRestante() {
+
         if (!produzindo) {
             return 0;
         }
 
-        long tempoPassado = System.currentTimeMillis() - inicioProducao;
-        long tempoNecessario = (long) (tempoProducao * 1000);
+        long tempoPassado =
+                System.currentTimeMillis() - inicioProducao;
 
-        long restante = tempoNecessario - tempoPassado;
+        long tempoNecessario =
+                (long) (tempoProducao * 1000);
+
+        long restante =
+                tempoNecessario - tempoPassado;
 
         if (restante <= 0) {
             return 0;
         }
+
         return restante / 1000.0;
     }
 
+    public boolean melhorar(Jogador jogador) {
 
-    public void melhorar() {
+        if (!jogador.gastarDinheiro(custoUpgrade)) {
+            return false;
+        }
+
         nivel++;
 
         dinheiroPorCiclo *= 1.25;
         tempoProducao *= 0.90;
 
-        IO.println(nome + " melhorada para o nível " + nivel + "!!!");
+        custoUpgrade *= 1.50;
+
+        return true;
     }
 
     public abstract double produzir();

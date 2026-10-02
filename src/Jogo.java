@@ -1,17 +1,93 @@
 import java.util.Scanner;
 
 public class Jogo {
-    private PatoPresidente presidente = new PatoPresidente();
-    private PatoDeus deus = new PatoDeus();
 
-    private Scanner sc = new Scanner(System.in);
+    private final PatoPresidente presidente = new PatoPresidente();
+    private final PatoDeus deus = new PatoDeus();
+
+    private final Scanner sc = new Scanner(System.in);
 
     private Jogador jogador;
+    private Fabrica fabrica;
     private MaquinaPatinhos maquinaPatinhos;
 
-    private void mostrarMenu() {
+    private boolean jogoRodando;
+
+    private void mostrarMenuPrincipal() {
+
+        System.out.println();
+        System.out.println("╔══════════════════════════════╗");
+        System.out.println("         DUCK FACTORY");
+        System.out.println("╚══════════════════════════════╝");
+
+        if (jogador != null) {
+            System.out.println("Jogador: " + jogador.getNome());
+            System.out.printf("Dinheiro: $%.2f%n", jogador.getSaldo());
+            System.out.println();
+        }
+
+        System.out.println("1) Máquinas");
+        System.out.println("2) Vila");
+        System.out.println("3) NPCs");
+        System.out.println("0) Sair");
+        System.out.print("> ");
+    }
+
+    private int lerOpcao() {
+        while (!sc.hasNextInt()) {
+            System.out.println("Digite uma opção válida.");
+            sc.next();
+            System.out.print("> ");
+        }
+
+        int opcao = sc.nextInt();
+        sc.nextLine();
+
+        return opcao;
+    }
+
+    public void iniciar() {
+
+        boolean rodando = true;
+
+        while (rodando) {
+
+            mostrarMenuInicial();
+
+            int opcao = lerOpcao();
+
+            switch (opcao) {
+
+                case 1:
+                    novoJogo();
+                    rodando = false;
+                    break;
+
+                case 2:
+                    continuar();
+                    rodando = false;
+                    break;
+
+                case 3:
+                    creditos();
+                    break;
+
+                case 0:
+                    rodando = false;
+                    System.out.println("Até mais!");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    private void mostrarMenuInicial() {
+
+        System.out.println();
         System.out.println("╔════════════════════╗");
-        System.out.println("     DUCK FACTORY     ");
+        System.out.println("     DUCK FACTORY");
         System.out.println("╚════════════════════╝");
         System.out.println("1) Novo jogo");
         System.out.println("2) Continuar");
@@ -20,89 +96,45 @@ public class Jogo {
         System.out.print("> ");
     }
 
-    private int lerOpcao(){
-        return sc.nextInt();
-    }
-
-    public void iniciar() throws InterruptedException {
-        boolean rodando = true;
-
-        while (rodando){
-            mostrarMenu();
-
-            int opcao = lerOpcao();
-
-            switch (opcao){
-                case 1:
-                    novoJogo();
-                    break;
-                case 2:
-                    continuar();
-                    break;
-                case 3:
-                    creditos();
-                    break;
-                case 0:
-                    rodando = false;
-                    break;
-                default:
-                    IO.println("Opção inválida, tente de novo.");
-            }
-        }
-    }
-
-    private void novoJogo() throws InterruptedException {
-
-        sc.nextLine();
+    private void novoJogo() {
 
         System.out.println();
-        System.out.println("╔══════════════════════════════════════╗");
-        System.out.println("           NOVO JOGO");
-        System.out.println("╚══════════════════════════════════════╝");
+        System.out.println("╔══════════════════════════════╗");
+        System.out.println("          NOVO JOGO");
+        System.out.println("╚══════════════════════════════╝");
 
-        IO.println("Digite o nome do seu pato: ");
+        System.out.print("Digite o nome do seu pato: ");
         String nome = sc.nextLine();
 
         jogador = new Jogador(nome);
+
+        fabrica = new Fabrica();
+
         maquinaPatinhos = new MaquinaPatinhos();
 
-        IO.println("\n");
+        fabrica.adicionarMaquina(maquinaPatinhos);
+
+        System.out.println();
+
         deus.apresentar();
-        Thread.sleep(5000);
 
-        System.out.println("\n\n\n\n\n\n\n╔═══════════════════════════════════════════════════════════════════╗");
-        System.out.println("???");
-        System.out.println("  Muito bem, Pato " + jogador.getNome() + "!");
-        System.out.println("  Sua missão é reconstruir a Vila Patotas.");
-        System.out.println("╚═══════════════════════════════════════════════════════════════════╝");
+        System.out.println();
+        System.out.println("Sua missão é reconstruir a Vila Patotas.");
+        System.out.println();
 
-        Thread.sleep(5000);
-
-        IO.println("\n\n\n\n\n\n\n");
-
-        menuJogo();
+        jogo();
     }
 
-    private void menuJogo() throws InterruptedException {
-        boolean jogando = true;
+    private void jogo() {
 
-        while (jogando){
+        jogoRodando = true;
+
+        while (jogoRodando) {
 
             verificarMaquinas();
 
-            System.out.println();
-            System.out.println("╔══════════════════════════════════════╗");
-            System.out.println("              DUCK FACTORY");
-            System.out.println("╠══════════════════════════════════════╣");
-            System.out.println("    Dinheiro: "+ jogador.getSaldo());
-            System.out.println("╠══════════════════════════════════════╣");
-            System.out.println("  1) Máquinas");
-            System.out.println("  2) Vila");
-            System.out.println("  3) NPCs");
-            System.out.println("  0) Voltar");
-            System.out.println("╚══════════════════════════════════════╝");
+            mostrarMenuPrincipal();
 
-            System.out.print("> ");
             int opcao = lerOpcao();
 
             switch (opcao) {
@@ -112,17 +144,16 @@ public class Jogo {
                     break;
 
                 case 2:
-                    System.out.println();
-                    System.out.println(" A vila ainda está em construção...");
+                    menuVila();
                     break;
 
                 case 3:
-                    System.out.println();
-                    System.out.println(" Ainda não existem NPCs disponíveis.");
+                    menuNPCs();
                     break;
 
                 case 0:
-                    jogando = false;
+                    jogoRodando = false;
+                    System.out.println("Saindo do jogo...");
                     break;
 
                 default:
@@ -131,58 +162,36 @@ public class Jogo {
         }
     }
 
-    private void menuMaquinas() throws InterruptedException {
-        boolean aberto = true;
+    private void menuMaquinas() {
 
-        while(aberto){
+        boolean voltando = false;
+
+        while (!voltando) {
 
             verificarMaquinas();
 
             System.out.println();
-            System.out.println("╔══════════════════════════════════════╗");
-            System.out.println("              MÁQUINAS");
-            System.out.println("╠══════════════════════════════════════╣");
+            System.out.println("╔══════════════════════════════╗");
+            System.out.println("           MÁQUINAS");
+            System.out.println("╚══════════════════════════════╝");
 
-            System.out.println("1)  Máquina de Patinhos");
-
-            if (maquinaPatinhos.isProduzindo()) {
-
-                if (maquinaPatinhos.terminou()) {
-                    System.out.println("   Status: PRONTA PARA COLETAR!");
-                } else {
-                    System.out.println("   Status: PRODUZINDO ("+maquinaPatinhos.tempoRestante()+" restantes)");
-                }
-
-            } else {
-                System.out.println("   Status: PARADA");
-            }
-
+            System.out.printf("Dinheiro: $%.2f%n", jogador.getSaldo());
             System.out.println();
-            System.out.println("2) Ativar máquina");
-            System.out.println("3) Coletar produção");
+
+            System.out.println("1) Máquina de Patinhos");
             System.out.println("0) Voltar");
-
-            System.out.println("╚══════════════════════════════════════╝");
-
             System.out.print("> ");
+
             int opcao = lerOpcao();
 
             switch (opcao) {
 
                 case 1:
-                    mostrarInformacoesMaquina();
-                    break;
-
-                case 2:
-                    maquinaPatinhos.ativar();
-                    break;
-
-                case 3:
-                    coletarMaquina();
+                    menuMaquinaPatinhos();
                     break;
 
                 case 0:
-                    aberto = false;
+                    voltando = true;
                     break;
 
                 default:
@@ -191,59 +200,193 @@ public class Jogo {
         }
     }
 
-    private void mostrarInformacoesMaquina() throws InterruptedException {
+    private void menuMaquinaPatinhos() {
 
-        System.out.println();
-        System.out.println("╔══════════════════════════════════════╗");
-        System.out.println("         MÁQUINA DE PATINHOS");
-        System.out.println("╠══════════════════════════════════════╣");
-        System.out.println("  Nível: " + maquinaPatinhos.getNivel());
-        System.out.println("  Produção: $" + maquinaPatinhos.getDinheiroPorCiclo());
-        System.out.println("  Tempo: " + maquinaPatinhos.getTempoProducao() + " segundos");
-        System.out.println("╚══════════════════════════════════════╝");
+        boolean voltando = false;
 
-        Thread.sleep(5000);
-    }
+        while (!voltando) {
 
-    private void coletarMaquina() {
+            verificarMaquinas();
 
-        double dinheiro = maquinaPatinhos.coletar();
+            System.out.println();
+            System.out.println("╔══════════════════════════════╗");
+            System.out.println("      MÁQUINA DE PATINHOS");
+            System.out.println("╚══════════════════════════════╝");
 
-        if (dinheiro > 0) {
-            jogador.adicionarDinheiro(dinheiro);
+            System.out.println();
+
+            System.out.println("Nível: " + maquinaPatinhos.getNivel());
 
             System.out.printf(
-                    " Você recebeu $%.2f!%n",
-                    dinheiro
+                    "Produção: $%.2f por ciclo%n",
+                    maquinaPatinhos.getDinheiroPorCiclo()
             );
+
+            System.out.printf(
+                    "Tempo: %.2f segundos%n",
+                    maquinaPatinhos.getTempoProducao()
+            );
+
+            System.out.printf(
+                    "Upgrade: $%.2f%n",
+                    maquinaPatinhos.getCustoUpgrade()
+            );
+
+            System.out.println();
+
+            if (maquinaPatinhos.isProduzindo()) {
+
+                if (maquinaPatinhos.terminou()) {
+                    System.out.println("Status: PRONTA PARA COLETAR");
+                } else {
+                    System.out.printf(
+                            "Status: PRODUZINDO (%.1fs restantes)%n",
+                            maquinaPatinhos.tempoRestante()
+                    );
+                }
+
+            } else {
+                System.out.println("Status: PARADA");
+            }
+
+            System.out.println();
+            System.out.println("1) Ativar");
+            System.out.println("2) Coletar");
+            System.out.println("3) Melhorar");
+            System.out.println("0) Voltar");
+            System.out.print("> ");
+
+            int opcao = lerOpcao();
+
+            switch (opcao) {
+
+                case 1:
+                    maquinaPatinhos.ativar();
+                    break;
+
+                case 2:
+                    coletarMaquinaPatinhos();
+                    break;
+
+                case 3:
+                    melhorarMaquinaPatinhos();
+                    break;
+
+                case 0:
+                    voltando = true;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    private void coletarMaquinaPatinhos() {
+
+        double valor = maquinaPatinhos.coletar();
+
+        if (valor > 0) {
+
+            jogador.adicionarDinheiro(valor);
+
+            System.out.printf(
+                    "Produção coletada! +$%.2f%n",
+                    valor
+            );
+
         } else {
-            System.out.println("A máquina ainda não terminou!");
+
+            if (maquinaPatinhos.isProduzindo()) {
+                System.out.printf(
+                        "A produção ainda não terminou. %.1fs restantes.%n",
+                        maquinaPatinhos.tempoRestante()
+                );
+            } else {
+                System.out.println("A máquina não está produzindo.");
+            }
+        }
+    }
+
+    private void melhorarMaquinaPatinhos() {
+
+        double custo = maquinaPatinhos.getCustoUpgrade();
+
+        if (jogador.getSaldo() < custo) {
+
+            System.out.printf(
+                    "Dinheiro insuficiente. Você precisa de $%.2f.%n",
+                    custo
+            );
+
+            return;
+        }
+
+        boolean melhorou = maquinaPatinhos.melhorar(jogador);
+
+        if (melhorou) {
+            System.out.println(
+                    "Máquina melhorada para o nível "
+                            + maquinaPatinhos.getNivel() + "!"
+            );
         }
     }
 
     private void verificarMaquinas() {
 
-        if (maquinaPatinhos != null &&
-                maquinaPatinhos.isProduzindo() &&
-                maquinaPatinhos.terminou()) {
+        // Por enquanto não precisamos mostrar nada aqui.
+        // A máquina é consultada quando o jogador abre o menu.
+    }
 
-            System.out.println();
-            System.out.println("🔔 A Máquina de Patinhos terminou!");
-        }
+    private void menuVila() {
+
+        System.out.println();
+        System.out.println("╔══════════════════════════════╗");
+        System.out.println("             VILA");
+        System.out.println("╚══════════════════════════════╝");
+
+        System.out.println();
+        System.out.println("A Vila Patotas ainda está destruída.");
+        System.out.println("Você precisará reconstruí-la.");
+        System.out.println();
+        System.out.println("Pressione ENTER para voltar.");
+
+        sc.nextLine();
+    }
+
+    private void menuNPCs() {
+
+        System.out.println();
+        System.out.println("╔══════════════════════════════╗");
+        System.out.println("             NPCs");
+        System.out.println("╚══════════════════════════════╝");
+
+        System.out.println();
+        presidente.apresentar();
+
+        System.out.println();
+        System.out.println("Pressione ENTER para voltar.");
+
+        sc.nextLine();
     }
 
     private void continuar() {
 
         System.out.println();
-        System.out.println("💾 Sistema de save ainda não implementado.");
+        System.out.println("O sistema de save ainda não foi implementado.");
+        System.out.println();
     }
 
     private void creditos() {
 
         System.out.println();
-        System.out.println("╔══════════════════════════════════════╗");
-        System.out.println("             DUCK FACTORY");
-        System.out.println("             Feito por nick120q");
-        System.out.println("╚══════════════════════════════════════╝");
+        System.out.println("╔══════════════════════════════╗");
+        System.out.println("            CRÉDITOS");
+        System.out.println("╚══════════════════════════════╝");
+
+        System.out.println();
+        System.out.println("Duck Factory");
+        System.out.println("Desenvolvido por nick120q");
+        System.out.println();
     }
 }
