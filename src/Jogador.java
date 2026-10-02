@@ -1,12 +1,11 @@
 public class Jogador {
     private String nome;
     private double saldo;
-    private int pontosMisticos;
+
 
     public Jogador(String nome) {
         this.nome = nome;
         this.saldo = 0;
-        this.pontosMisticos = pontosMisticos;
     }
 
     public String getNome() {
@@ -15,10 +14,6 @@ public class Jogador {
 
     public double getSaldo() {
         return saldo;
-    }
-
-    public int getPontosMisticos() {
-        return pontosMisticos;
     }
 
     public void adicionarDinheiro(double valor) {
@@ -34,10 +29,5 @@ public class Jogador {
         }
 
         return false;
-    }
-
-    public void mostrarStatus() {
-        IO.println("Pato " + nome);
-        IO.println("Dinheiro: " + saldo);
     }
 }

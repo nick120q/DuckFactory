@@ -1,8 +1,5 @@
-void main() {
-    Dialogos dia = new Dialogos();
-
+void main() throws InterruptedException {
     Jogo jogo = new Jogo();
-    jogo.iniciar();
 
-    // fazer pato juiz pietro
+    jogo.iniciar();
 }

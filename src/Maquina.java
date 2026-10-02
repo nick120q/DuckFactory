@@ -36,14 +36,15 @@ public abstract class Maquina {
     }
 
     public void ativar() {
-        if (!produzindo) {
-            inicioProducao = System.currentTimeMillis();
-            produzindo = true;
-
-            IO.println(nome + " foi ativada!");
-        } else {
-            IO.println(nome + " já está produzindo!");
+        if (produzindo) {
+            IO.println("A máquina já está produzindo!");
+            return;
         }
+
+        inicioProducao = System.currentTimeMillis();
+        produzindo = true;
+
+        IO.println(nome + " foi ativada!");
     }
 
     public boolean terminou() {
@@ -58,14 +59,12 @@ public abstract class Maquina {
     }
 
     public double coletar() {
-        if (terminou()) {
-            produzindo = false;
-
-            System.out.println(nome + " terminou a produção!");
-
-            return produzir();
+        if (!terminou()) {
+            return 0;
         }
-        return 0;
+
+        produzindo = false;
+        return produzir();
     }
 
     public double tempoRestante() {
